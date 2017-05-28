@@ -13,15 +13,19 @@ namespace AudioVis.Balls
 
         GameObject[] spheres;
         bool mouseDown;
+        int spheresPerBand;
 
         // Use this for initialization
         void Start()
         {
             spheres = new GameObject[NumBalls];
 
+            spheresPerBand = NumBalls / AudioVisualisation.FreqBands;
+
             for ( int i = 0; i < NumBalls; i++ )
             {
                 GameObject sphere = GameObject.CreatePrimitive(PrimitiveType.Sphere);
+                Ball ball = sphere.AddComponent<Ball>();
                 float randScale = Random.Range(MinScale, MaxScale);
                 sphere.transform.localScale = new Vector3(randScale, randScale, randScale);
                 sphere.transform.parent = this.transform;
@@ -30,6 +34,14 @@ namespace AudioVis.Balls
                 Vector3 randomPos = RandomPositionInSphere(Radius);
                 sphere.transform.position = randomPos;
                 spheres[i] = sphere;
+
+                // Freq Band               
+                int FreqBands = AudioVisualisation.FreqBands;
+                ball.freqIndex = Mathf.Min((i / spheresPerBand) % FreqBands, FreqBands - 1);
+                float redVal = (float)ball.freqIndex / (float)FreqBands;
+                sphere.GetComponent<MeshRenderer>().material.color = new Color(redVal, 0, 0, 1);
+                
+                Debug.Log(string.Format("{0}, {1}", ball.freqIndex, redVal));
             }
 
         }
@@ -55,15 +67,18 @@ namespace AudioVis.Balls
 
         // Update is called once per frame
         void Update()
-        {
-            float avg = Average();
+        {          
             for ( int i = 0; i < spheres.Length; i++ )
             {
                 GameObject sphere = spheres[i];
+                Ball ball = sphere.GetComponent<Ball>();
+
+                float freqPower = AudioVisualisation._freqBands[ball.freqIndex];
+               
                 Rigidbody rb = sphere.GetComponent<Rigidbody>();
                 rb.AddForce(-sphere.transform.position * 10);
                
-                rb.AddForce(sphere.transform.position.normalized * avg * 30000);
+                rb.AddForce(sphere.transform.position.normalized * freqPower * 300);
             }
 
         }

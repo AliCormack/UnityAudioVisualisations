@@ -8,6 +8,8 @@ namespace AudioVis.Balls
     public class Ball : MonoBehaviour
     {
 
+        public int freqIndex;
+
         // Use this for initialization
         void Start()
         {
