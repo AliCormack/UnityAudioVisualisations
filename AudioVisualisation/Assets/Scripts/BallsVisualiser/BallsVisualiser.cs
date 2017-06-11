@@ -76,25 +76,12 @@ namespace AudioVis.Balls
                 float freqPower = AudioVisualisation._freqBands[ball.freqIndex];
                
                 Rigidbody rb = sphere.GetComponent<Rigidbody>();
-                rb.AddForce(-sphere.transform.position * 10);
+                rb.AddForce(-sphere.transform.position * 30);
                
-                rb.AddForce(sphere.transform.position.normalized * freqPower * 300);
+                rb.AddForce(sphere.transform.position.normalized * freqPower * 600);
             }
 
-        }
-
-        float Average()
-        {
-            float avg = 0;
-            for (int i = 0; i < AudioVisualisation._samples.Length; i++ )
-            {
-                avg += AudioVisualisation._samples[i];
-            }
-            avg /= AudioVisualisation._samples.Length;
-
-            return avg;
-            
-        }
+        }        
 
     }
 }
